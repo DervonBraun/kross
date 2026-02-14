@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using EffectSystem;
+using Player;
 using Player.EffectSystem;
 using UnityEngine;
 

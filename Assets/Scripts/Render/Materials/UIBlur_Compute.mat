@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8280340266848954666
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Editor::UnityEditor.Rendering.Universal.AssetVersion
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UIBlur_Compute
+  m_Shader: {fileID: 4800000, guid: 43c89e8042ad8634384b58619f2da658, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - UI_OVERLAY
+  - _ALPHA_CLIP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: 283f897e4925411ebbaa758b4cb13fc2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SourceTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Aniso: 0.454
+    - _AnisoAngleDeg: 86.1
+    - _BaseOpacity: 0.641
+    - _BlurEdgeInfluence: 0.878
+    - _BlurFresnelBoost: 0.76
+    - _BlurFresnelPower: 4.55
+    - _BlurMaxRadiusPx: 31.2
+    - _BlurMinRadiusPx: 0
+    - _BlurOpacityInfluence: 0.629
+    - _BlurRadiusPx: 10.6
+    - _BlurResponse: 2.12
+    - _BlurSigma: 4.04
+    - _BlurStrength: 2
+    - _BlurTintInfluence: 0.777
+    - _Brightness: -0.022
+    - _Contrast: 1.073
+    - _DepthEdgeFade: 2.32
+    - _Distortion: 0
+    - _DistortionSpeed: 0
+    - _EdgeFade: 2.17
+    - _EdgeInfluence: 0.446
+    - _FlipY: 1
+    - _FresnelBoost: 0.5
+    - _FresnelPower: 0.5
+    - _FresnelStrength: 0
+    - _KernelRotateJitter: 0.451
+    - _MaxMip: 0
+    - _MaxRadiusPx: 84.2
+    - _MinRadiusPx: 17.7
+    - _MipBias: -1
+    - _NoiseAmount: 0.0322
+    - _NoiseScale: 0.1
+    - _Opacity: 0.707
+    - _OpacityInfluence: 0.598
+    - _Quality: 8
+    - _RadiusPx: 18.2
+    - _RefractionStrength: 0.74
+    - _Response: 1.94
+    - _SampleCount: 10.17
+    - _Saturation: 0.98
+    - _SharpMix: 0
+    - _Sigma: 4.27
+    - _Smoothness: 1
+    - _SourceContribution: 0.152
+    - _SpecularPower: 181
+    - _Strength: 0.76
+    - _TapCount: 13.3
+    - _TintInfluence: 0.44
+    - _TintStrength: 0.777
+    - _UseGlobalBlur: 1
+    - _UseUIOverlay: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Dir: {r: 0, g: 1, b: 0, a: 0}
+    - _GlassTint: {r: 0.92, g: 0.96, b: 1, a: 0.4}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0.4}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

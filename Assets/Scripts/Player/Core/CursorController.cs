@@ -1,27 +1,25 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Player
 {
-    public class CursorController : MonoBehaviour
+    public sealed class CursorController : MonoBehaviour
     {
-        [SerializeField] private bool _lockOnStart = true;
+        [SerializeField] private bool _lockCursorInGameplay = true;
 
-        private void Start()
+        public void SetCursor(bool uiMode)
         {
-            if (_lockOnStart) Lock();
-        }
+            Cursor.visible = uiMode;
 
-        public void Lock()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        public void Unlock()
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            if (uiMode)
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else
+            {
+                Cursor.lockState = _lockCursorInGameplay
+                    ? CursorLockMode.Locked
+                    : CursorLockMode.None;
+            }
         }
     }
 }

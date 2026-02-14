@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DG.Tweening;
+using EffectSystem;
 using Player.EffectSystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -88,6 +89,13 @@ namespace Player
             foreach (var id in _viewsById.Keys)
                 if (!ContainsId(desired, id))
                     leaving.Add(id);
+            
+            for (int i = 0; i < leaving.Count; i++)
+            {
+                var id = leaving[i];
+                if (_viewsById.TryGetValue(id, out var v))
+                    v.SetIgnoreLayout(true);
+            }
 
             // FIRST: позиции и ширины ДО layout-перестановки
             var firstPos = new Dictionary<string, Vector2>(_viewsById.Count);
@@ -252,14 +260,17 @@ namespace Player
 
             // вернуть layout после анимаций
             float longest = Mathf.Max(_moveDuration, _enterDuration, _exitDuration);
+            bool hasLeaving = leaving.Count > 0;
+
             _running.Add(DOVirtual.DelayedCall(longest + 0.01f, () =>
             {
-                if (_layout != null)
+                if (_layout != null && !hasLeaving)
                 {
                     _layout.enabled = true;
-                    UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(_root);
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(_root);
                 }
             }).SetUpdate(true));
+
         }
 
 
@@ -308,10 +319,15 @@ namespace Player
         {
             if (!_viewsById.TryGetValue(id, out var view)) return;
 
+            // сбросить layout-исключение и твины, чтобы не тащить мусор из "leaving" в пул
+            view.SetIgnoreLayout(false);
+            view.ResetState();
+
             view.gameObject.SetActive(false);
             _viewsById.Remove(id);
             _pool.Push(view);
         }
+
 
         private void KillRunningTweens()
         {

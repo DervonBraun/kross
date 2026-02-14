@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b67694ef5d246e0bf2a0daaea32b865, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: Assembly-CSharp::Tasks.TaskDatabase
+  tasks:
+  - {fileID: 11400000, guid: bec26f785a2432546a106a759aa6428c, type: 2}
+  - {fileID: 11400000, guid: 7fe2bc9406a886a45b5477c17c642262, type: 2}
+  - {fileID: 11400000, guid: 5f09d7f9c811c1042929e8a7abb9b84a, type: 2}

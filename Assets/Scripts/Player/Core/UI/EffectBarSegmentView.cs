@@ -11,6 +11,7 @@ namespace Player
         [SerializeField] private RectTransform _visual;
         [SerializeField] private Image _visualImage;
         [SerializeField] private CanvasGroup _cg;
+        [SerializeField] private LayoutElement _layoutElement;
 
         public RectTransform Slot { get; private set; }
         public RectTransform Visual => _visual;
@@ -22,11 +23,19 @@ namespace Player
         {
             Slot = (RectTransform)transform;
 
+            if (_layoutElement == null)
+                _layoutElement = GetComponent<LayoutElement>(); // может быть null и это ок
+
             if (_cg == null)
             {
                 _cg = GetComponent<CanvasGroup>();
                 if (_cg == null) _cg = gameObject.AddComponent<CanvasGroup>();
             }
+        }
+        public void SetIgnoreLayout(bool ignore)
+        {
+            if (_layoutElement == null) _layoutElement = GetComponent<LayoutElement>();
+            if (_layoutElement != null) _layoutElement.ignoreLayout = ignore;
         }
 
         public void Bind(EffectInstance inst)
@@ -84,13 +93,15 @@ namespace Player
         {
             KillTweens();
 
+            // <-- ВАЖНО: если сегмент был leaving, он мог быть исключен из layout
+            SetIgnoreLayout(false);
+
             if (_cg != null) _cg.alpha = 1f;
 
-            // СЛОТ не трогаем по размеру (это layout), но scale нормализуем
             Slot.localScale = Vector3.one;
 
             if (_visual != null)
-                _visual.localScale = Vector3.one; // <-- твой фикс: scaleX обратно 1
+                _visual.localScale = Vector3.one;
         }
         public Tween TweenVisualScaleX(float to, float duration, Ease ease)
         {

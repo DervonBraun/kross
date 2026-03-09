@@ -22,5 +22,9 @@ namespace Tasks
         [Header("Repeat")]
         public bool repeatable = true;
         [Min(0f)] public float cooldownSeconds = 0f;
+
+        [Header("Heat")]
+        [Tooltip("Конфиг heat-поведения. Если не задан — heat не применяется, reward = base.")]
+        public TaskHeatConfig heatConfig;
     }
 }

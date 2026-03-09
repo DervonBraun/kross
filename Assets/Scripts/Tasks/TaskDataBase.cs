@@ -10,6 +10,8 @@ namespace Tasks
 
         private Dictionary<string, RoutineTaskDef> _map;
 
+        public IReadOnlyList<RoutineTaskDef> AllDefs => tasks;
+
         public bool TryGet(string id, out RoutineTaskDef def)
         {
             if (string.IsNullOrWhiteSpace(id))

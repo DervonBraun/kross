@@ -9,6 +9,7 @@ namespace Player
         public enum DetectorActiveMode { DefaultOnly, AimOnly, Both }
         [SerializeField] private DetectorActiveMode _activeMode = DetectorActiveMode.Both;
         public event Action<Component> TargetChanged;
+        public Component CurrentTarget { get; private set; }
 
         [Header("Detection")]
         [SerializeField] private QueryTriggerInteraction _triggerInteraction = QueryTriggerInteraction.Ignore;
@@ -78,6 +79,7 @@ namespace Player
                 return;
 
             _currentTarget = target;
+            CurrentTarget = _currentTarget;
             TargetChanged?.Invoke(_currentTarget);
         }
 
@@ -90,6 +92,7 @@ namespace Player
             }
 
             _currentTarget = null;
+            CurrentTarget = _currentTarget;
             TargetChanged?.Invoke(null);
         }
 

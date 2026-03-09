@@ -15,6 +15,8 @@ namespace AN_
         [SerializeField] private EffectManager _effects;
         [SerializeField] private NotificationBus _notify;
 
+        public GameState State => _state;
+
         [Header("Requests (SO)")]
         [Tooltip("Запрос, который покупает/генерирует коды за токены.")]
         [SerializeField] private ANRequestDef _generateCodeRequest;

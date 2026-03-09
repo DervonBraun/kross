@@ -16,9 +16,9 @@ MonoBehaviour:
   _canSprint: 1
   _canLook: 1
   _canAim: 1
-  _moveSpeed: 5
-  _acceleration: 10
-  _deceleration: 10
+  _moveSpeed: 4
+  _acceleration: 7
+  _deceleration: 7
   _accelerationTime: 1
   _decelerationTime: 1
   _accelCurve:
@@ -98,7 +98,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _lookMaxSpeed: 0
-  _aimFov: 40
+  _aimFov: 50
   _aimDefaultFov: 75
   _aimCameraOffset: {x: 0.06, y: -0.03, z: 0}
   _aimInTime: 0.2
@@ -129,7 +129,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _headBobEnabled: 1
   _headBobAmplitude: {x: 0.03, y: 0.04}
-  _headBobFrequency: 1
+  _headBobFrequency: 0.8
   _headBobFrequencyAtMaxSpeedMul: 0.8
   _headBobMinSpeed01: 0.08
   _headBobInTime: 0.2
@@ -162,4 +162,4 @@ MonoBehaviour:
   _sphereRadius: 0.15
   _interactionMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 4294967295

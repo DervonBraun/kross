@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ff9e4bfb9a53804e956e96260de90df, type: 3}
+  m_Name: InventoryFlow
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Flow.PageFlowDefinition
+  PageId:
+    _id: inventory
+  ConflictPolicy: 0
+  Priority: 0
+  OpenSteps:
+  - {fileID: 11400000, guid: d134b2c29e8fd4849964314e3964d1a7, type: 2}
+  - {fileID: 11400000, guid: 082242ba9ce8f484fb78d179ce4c3b5d, type: 2}
+  - {fileID: 11400000, guid: fd24ff18c7ef259459f7bf3b58da916e, type: 2}
+  - {fileID: 11400000, guid: 2028cc0efe972954a95615d26a224fa8, type: 2}
+  - {fileID: 11400000, guid: de3a90ef92393b04e9d003316cb64965, type: 2}
+  - {fileID: 11400000, guid: 28c3682502eae334cb69c0b49f3551fe, type: 2}
+  - {fileID: 11400000, guid: eef2f4d150c72824c8ba1588a1910139, type: 2}
+  - {fileID: 11400000, guid: 49d91cc68561a2d4188984f1dccc70f3, type: 2}
+  CloseSteps:
+  - {fileID: 11400000, guid: d134b2c29e8fd4849964314e3964d1a7, type: 2}
+  - {fileID: 11400000, guid: 7a91877c3746e5a4bbc00384fdb473d8, type: 2}
+  - {fileID: 11400000, guid: c54b06d9203eec64388df28725119817, type: 2}
+  - {fileID: 11400000, guid: c816e61b8782d1a45bcf33cf800c159c, type: 2}
+  - {fileID: 11400000, guid: 917d7bb5def426045b55bf5b750134a6, type: 2}
+  - {fileID: 11400000, guid: b6b66981cd7a2fe47b0bebb0d1745068, type: 2}
+  - {fileID: 11400000, guid: 49d91cc68561a2d4188984f1dccc70f3, type: 2}

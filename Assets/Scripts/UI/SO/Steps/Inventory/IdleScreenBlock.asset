@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d51d60f439192d47822b59a16afe9f3, type: 3}
+  m_Name: IdleScreenBlock
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Flow.Steps.ConditionalStep
+  Condition:
+    rid: -2
+  When:
+    rid: 8372646007343153246
+  Then:
+  - {fileID: 11400000, guid: c131cc1cec1936946970282e9ad6186e, type: 2}
+  - {fileID: 11400000, guid: c4b069feac5d5a0448cf6a1138a2edd7, type: 2}
+  - {fileID: 11400000, guid: 72676f65f74b938418329ea16c1ef518, type: 2}
+  - {fileID: 11400000, guid: ccdb437518108bd45a3c9af91ec4b7aa, type: 2}
+  Else: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8372646007343153246
+      type: {class: InventoryIdleCondition, ns: UI.Flow.Inventory, asm: Assembly-CSharp}
+      data:
+        ThresholdSeconds: 30

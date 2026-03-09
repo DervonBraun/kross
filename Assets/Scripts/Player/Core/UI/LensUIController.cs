@@ -36,9 +36,8 @@ namespace Player
         private InteractionDetector _detector;
 
         private Component _currentTarget;
-        private IInteractableAim _aimTarget;          // кешируем, чтобы не искать каждый кадр (опционально)
+        private IInteractableAim _aimTarget;
         private IFocusBoundsProvider _boundsProvider;
-
 
         private Vector2 _vTL, _vTR, _vBR, _vBL;
 
@@ -112,14 +111,28 @@ namespace Player
 
             if (_aimActive)
             {
-                Show(); // теперь показываем сразу
+                // FIX: детектор не пошлёт повторный TargetChanged если таргет не менялся,
+                // поэтому переопрашиваем его явно при каждом входе в Aim.
+                RefreshTargetFromDetector();
+                Show();
             }
             else
             {
                 _currentTarget = null;
+                _aimTarget = null;
                 _boundsProvider = null;
                 Hide();
             }
+        }
+
+        /// <summary>
+        /// Принудительно синхронизирует _currentTarget / _aimTarget / _boundsProvider
+        /// с тем, что детектор видит прямо сейчас.
+        /// </summary>
+        private void RefreshTargetFromDetector()
+        {
+            Component detectorTarget = _detector != null ? _detector.CurrentTarget : null;
+            OnTargetChanged(detectorTarget);
         }
 
         private void OnTargetChanged(Component target)
@@ -129,7 +142,7 @@ namespace Player
             if (_currentTarget == null)
             {
                 _aimTarget = null;
-                _boundsProvider = null; // НЕ Hide(), в Aim остаётся idle
+                _boundsProvider = null; // НЕ Hide() — в Aim остаётся idle
                 return;
             }
 
@@ -149,18 +162,17 @@ namespace Player
             rect = default;
 
             if (_currentTarget == null) return false;
-            if (_aimTarget == null) return false;        // NEW
+            if (_aimTarget == null) return false;
             if (_boundsProvider == null) return false;
             if (!_boundsProvider.TryGetFocusBounds(out var bounds)) return false;
-
             if (!TryGetScreenRect(bounds, _cam, out var r)) return false;
+
             rect = r;
             return true;
         }
 
         private Rect GetIdleScreenRect()
         {
-            // idle rect вокруг центра экрана
             Vector2 center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f) + _idleCenterOffset;
             float half = _idleSizePx * 0.5f;
             return Rect.MinMaxRect(center.x - half, center.y - half, center.x + half, center.y + half);

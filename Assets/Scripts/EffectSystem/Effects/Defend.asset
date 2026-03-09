@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player.EffectSystem.EffectDefinition
   _id: effect_defend
   _displayName: Defend
-  _color: {r: 1, g: 0, b: 1, a: 1}
+  _color: {r: 1, g: 0, b: 1, a: 0.101960786}
   _icon: {fileID: 0}
-  _defaultDurationSeconds: 800
+  _defaultDurationSeconds: 300
   _unique: 1
   _category: 0
   _tags:

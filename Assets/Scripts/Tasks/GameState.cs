@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using EffectSystem;
 using UnityEngine;
 // твой EffectManager namespace
@@ -24,6 +25,10 @@ namespace Tasks
         // Для дебага/простоты: лор можно хранить set'ом.
         private readonly HashSet<string> _unlockedLoreIds = new();
         private readonly HashSet<string> _scannedItemIds = new();
+        private readonly HashSet<string> _analyzedItemIds = new();
+
+        public event Action<string> ItemScanned;
+        public event Action<string> ItemAnalyzed;
 
         public TokenAmount Wallet => _wallet;
 
@@ -45,7 +50,6 @@ namespace Tasks
             if (amount <= 0) return;
             _normalCodes = Mathf.Max(0, _normalCodes + amount);
         }
-        
 
         public void AddResetCodes(int amount)
         {
@@ -88,7 +92,7 @@ namespace Tasks
         public bool HasLore(string loreId)
             => !string.IsNullOrWhiteSpace(loreId) && _unlockedLoreIds.Contains(loreId);
         #endregion
-        
+
         #region Scanned Items (AN+)
         public int ScannedItemCount => _scannedItemIds.Count;
 
@@ -104,7 +108,26 @@ namespace Tasks
         public bool MarkItemScanned(string itemId)
         {
             if (string.IsNullOrWhiteSpace(itemId)) return false;
-            return _scannedItemIds.Add(itemId);
+            if (!_scannedItemIds.Add(itemId)) return false;
+            ItemScanned?.Invoke(itemId);
+            return true;
+        }
+
+        public bool IsItemAnalyzed(string itemId)
+        {
+            if (string.IsNullOrWhiteSpace(itemId)) return false;
+            return _analyzedItemIds.Contains(itemId);
+        }
+
+        /// <summary>
+        /// Отмечает предмет как проанализированный. Возвращает true, если добавлен впервые.
+        /// </summary>
+        public bool MarkItemAnalyzed(string itemId)
+        {
+            if (string.IsNullOrWhiteSpace(itemId)) return false;
+            if (!_analyzedItemIds.Add(itemId)) return false;
+            ItemAnalyzed?.Invoke(itemId);
+            return true;
         }
 
         /// <summary>
@@ -129,6 +152,26 @@ namespace Tasks
         }
         #endregion
 
+        
+        #region OKTS Stage
+
+        /// <summary>
+        /// Повышает стадию ОКТС на 1. Вызывается из CycleManager.
+        /// </summary>
+        public void IncrementOktsStage()
+        {
+            _oktsStage = Mathf.Min(_oktsStage + 1, int.MaxValue);
+        }
+
+        /// <summary>
+        /// Сбрасывает стадию ОКТС (например, при рестарте / Game Over).
+        /// </summary>
+        public void ResetOktsStage()
+        {
+            _oktsStage = 0;
+        }
+
+        #endregion
 #if UNITY_EDITOR
         private void OnValidate()
         {

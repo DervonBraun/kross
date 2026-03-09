@@ -15,6 +15,7 @@ MonoBehaviour:
   id: code_standard
   title: Code
   promptText: aaa
+  responseText: 
   type: 1
   cost:
     red: 0
@@ -23,10 +24,13 @@ MonoBehaviour:
   requirements: []
   blueReward: 0
   loreId: 
-  grantEffects:
-  - {fileID: 11400000, guid: e4055d835464a934da1b8d51baa513a9, type: 2}
+  grantEffects: []
   normalCodeReward: 1
   resetCodeReward: 0
   autoUseAfterPurchase: 0
   codeType: 0
+  createTab: 1
+  reuseExistingTab: 1
+  closeChatAfterUse: 0
+  tabIcon: {fileID: 0}
   attachments: []

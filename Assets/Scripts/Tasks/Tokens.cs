@@ -33,6 +33,17 @@ namespace Tasks
             return true;
         }
 
+        /// <summary>
+        /// Возвращает новый TokenAmount, где каждый канал умножен на multiplier
+        /// и округлён до целого (минимум 0).
+        /// </summary>
+        public TokenAmount Scale(float multiplier) => new TokenAmount
+        {
+            red   = Mathf.Max(0, Mathf.RoundToInt(red   * multiplier)),
+            green = Mathf.Max(0, Mathf.RoundToInt(green * multiplier)),
+            blue  = Mathf.Max(0, Mathf.RoundToInt(blue  * multiplier)),
+        };
+
         public override string ToString() => $"R:{red} G:{green} B:{blue}";
     }
 }

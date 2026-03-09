@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de5820a66d0043d7be95dce5a7575c6d, type: 3}
+  m_Name: heat_config_red_gen
+  m_EditorClassIdentifier: Assembly-CSharp::Tasks.TaskHeatConfig
+  selfHeatRate: 0.4
+  maxHeat: 1
+  initialHeat: 0
+  passiveCooldownRate: 0
+  influences:
+  - targetTaskId: task_red_gen2
+    rewardMultiplier: 1.5
+  - targetTaskId: task_red_septic
+    rewardMultiplier: 1.5
+  maxCompletionsPerSession: 0

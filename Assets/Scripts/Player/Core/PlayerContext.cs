@@ -1,7 +1,7 @@
 ﻿using System;
 using AN_;
 using EffectSystem;
-using Player.EffectSystem;
+using UI.Flow;
 using UnityEngine;
 
 namespace Player
@@ -9,82 +9,109 @@ namespace Player
     public class PlayerContext : MonoBehaviour
     {
         [Header("Refs")]
-        [SerializeField] private InputReader _inputReader;
-        [SerializeField] private PlayerConfig _playerConfig;
-        [SerializeField] private InputFilter _inputFilter;
-        [SerializeField] private Motor _motor;
-        [SerializeField] private PlayerCameraRig _playerCameraRig;
-        [SerializeField] private CursorController _cursorController;
+        [SerializeField] private InputReader           _inputReader;
+        [SerializeField] private PlayerConfig          _playerConfig;
+        [SerializeField] private InputFilter           _inputFilter;
+        [SerializeField] private Motor                 _motor;
+        [SerializeField] private PlayerCameraRig       _playerCameraRig;
+        [SerializeField] private CursorController      _cursorController;
         [SerializeField] private InteractionController _interactionController;
-        [SerializeField] private InteractionDetector _interactionDetector;
-        [SerializeField] private Camera _camera;
-        [SerializeField] private EffectManager _effectManager;
-        [SerializeField] private ANService _service;
+        [SerializeField] private InteractionDetector   _interactionDetector;
+        [SerializeField] private Camera                _camera;
+        [SerializeField] private EffectManager         _effectManager;
+        [SerializeField] private ANService             _service;
 
-        public InputReader InputReader => _inputReader;
-        public PlayerConfig PlayerConfig => _playerConfig;
-        public InputFilter InputFilter => _inputFilter;
-        public Motor Motor => _motor;
-        public PlayerCameraRig CameraRig => _playerCameraRig;
-        public CursorController CursorController => _cursorController;
+        [Header("UI")]
+        [Tooltip("Назначается через WebUIManagerBootstrap. Можно также вручную.")]
+        [SerializeField] private WebUIManager _webUIManager;
+
+        // ── Hotkey page ids ───────────────────────────────────────────────────
+        // Вынесены в Inspector чтобы не хардкодить строки в коде.
+        [Header("Hotkeys → Pages")]
+        [SerializeField] private PageId _inventoryPageId = new("Inventory");
+
+        public InputReader          InputReader          => _inputReader;
+        public PlayerConfig         PlayerConfig         => _playerConfig;
+        public InputFilter          InputFilter          => _inputFilter;
+        public Motor                Motor                => _motor;
+        public PlayerCameraRig      CameraRig            => _playerCameraRig;
+        public CursorController     CursorController     => _cursorController;
         public InteractionController InteractionController => _interactionController;
-        public InteractionDetector InteractionDetector => _interactionDetector;
-        public Camera Camera => _camera;
-        public EffectManager EffectManager => _effectManager;
-        public ANService Service => _service;
+        public InteractionDetector  InteractionDetector  => _interactionDetector;
+        public Camera               Camera               => _camera;
+        public EffectManager        EffectManager        => _effectManager;
+        public ANService            Service              => _service;
 
-        // Старое
         public CameraState CameraState { get; private set; } = CameraState.Default;
         public event Action<CameraState> CameraStateChanged;
 
-        // Новое: режим игрока
         public PlayerMode Mode { get; private set; } = PlayerMode.Gameplay;
         public event Action<PlayerMode> ModeChanged;
 
+        // ── IPageFlowBus shortcut ─────────────────────────────────────────────
+        private IPageFlowBus FlowBus => _webUIManager;
+
+        // Считаем количество открытых страниц — безопаснее чем bool
+        private int _openPageCount;
+
         private void Awake()
         {
-            if (_motor == null) _motor = GetComponentInChildren<Motor>();
-            if (_playerCameraRig == null) _playerCameraRig = GetComponentInChildren<PlayerCameraRig>();
-            if (_inputFilter == null) _inputFilter = GetComponentInChildren<InputFilter>();
-            if (_cursorController == null) _cursorController = GetComponentInChildren<CursorController>();
+            if (_motor == null)               _motor               = GetComponentInChildren<Motor>();
+            if (_playerCameraRig == null)     _playerCameraRig     = GetComponentInChildren<PlayerCameraRig>();
+            if (_inputFilter == null)         _inputFilter         = GetComponentInChildren<InputFilter>();
+            if (_cursorController == null)    _cursorController    = GetComponentInChildren<CursorController>();
+            if (_webUIManager == null)        _webUIManager        = FindAnyObjectByType<WebUIManager>();
 
-            ApplyMode(Mode); // стартовая синхронизация
+            if (_webUIManager != null)
+            {
+                _webUIManager.PageOpened += _ => { _openPageCount++; RefreshCursor(); };
+                _webUIManager.PageClosed += _ => { _openPageCount = Mathf.Max(0, _openPageCount - 1); RefreshCursor(); };
+            }
+
+            ApplyMode(Mode);
         }
 
         private void Update()
         {
             float dt = Time.deltaTime;
 
-            // 1) Глобальные хоткеи/режимы (инвентарь)
             TickModeHotkeys();
 
-            // 2) Камера-state обновляем только когда Gameplay (иначе Aim будет “липнуть” логически)
             if (Mode == PlayerMode.Gameplay)
                 UpdateCameraState();
             else
                 SetCameraState(CameraState.Default);
 
-            // 3) Тики. Можно тикать всегда, если Motor/CameraRig берут инпут через InputFilter (там будет ноль).
             _motor.Tick(dt);
             _playerCameraRig.Tick(dt);
         }
 
+        // ══════════════════════════════════════════════════════════════════════
+        // Hotkeys
+        // ══════════════════════════════════════════════════════════════════════
+
         private void TickModeHotkeys()
         {
-            // ВАЖНО: InventoryPressed() должен быть завязан на InputFilter,
-            // чтобы не ловить “лишнее” в неподходящих режимах, но при этом
-            // оставаться доступным для закрытия UI.
-            if (_inputFilter != null && _inputFilter.InventoryPressed())
+            if (_inputFilter == null || !_inputFilter.InventoryPressed()) return;
+
+            if (FlowBus == null)
             {
-                ToggleInventoryMode();
+                Debug.LogWarning("[PlayerContext] IPageFlowBus not set — inventory hotkey ignored.");
+                return;
             }
+
+            // Пока идёт анимация — игнорируем нажатия
+            if (_webUIManager != null && _webUIManager.IsFlowInProgress) return;
+
+            if (FlowBus.IsPageOpen(_inventoryPageId))
+                FlowBus.ClosePage(_inventoryPageId);
+            else
+                FlowBus.OpenPage(_inventoryPageId);
         }
 
-        private void ToggleInventoryMode()
-        {
-            var next = Mode == PlayerMode.Gameplay ? PlayerMode.UiInventory : PlayerMode.Gameplay;
-            SetMode(next);
-        }
+        // ══════════════════════════════════════════════════════════════════════
+        // Mode (вызывается только из flow-шагов: LockInputStep / UnlockInputStep)
+        // ══════════════════════════════════════════════════════════════════════
 
         public void SetMode(PlayerMode newMode)
         {
@@ -97,46 +124,46 @@ namespace Player
 
         private void ApplyMode(PlayerMode mode)
         {
-            // 1) Инпут
             if (_inputFilter != null)
                 _inputFilter.ApplyMode(mode);
 
-            // 2) Курсор
-            if (_cursorController != null)
-            {
-                bool ui = mode != PlayerMode.Gameplay;
-                _cursorController.SetCursor(ui); 
-                // Если у тебя другой API, замени на:
-                // Cursor.visible / Cursor.lockState внутри CursorController
-            }
-
-            // 3) (Опционально) взаимодействие в мире
-            // Не обязательно выключать компоненты, если они используют InputFilter,
-            // но если твой InteractionController не гейтится фильтром, то проще так:
+            // Interaction выключается только в не-Gameplay режиме
             if (_interactionController != null)
                 _interactionController.enabled = (mode == PlayerMode.Gameplay);
 
             if (_interactionDetector != null)
                 _interactionDetector.enabled = (mode == PlayerMode.Gameplay);
+
+            RefreshCursor();
         }
+
+        /// <summary>
+        /// Курсор виден если открыта хоть одна UI-страница ИЛИ режим не Gameplay.
+        /// Вызывается при смене режима и при PageOpened/PageClosed.
+        /// </summary>
+        private void RefreshCursor()
+        {
+            if (_cursorController == null) return;
+            bool showCursor = _openPageCount > 0 || Mode != PlayerMode.Gameplay;
+            _cursorController.SetCursor(showCursor);
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // Camera
+        // ══════════════════════════════════════════════════════════════════════
 
         private void UpdateCameraState()
         {
             bool aimHeld = _inputFilter != null && _inputFilter.Aim();
-            bool canAim = _playerConfig != null && _playerConfig.CanLook;
+            bool canAim  = _playerConfig != null && _playerConfig.CanLook;
 
-            var desiredState = (canAim && aimHeld)
-                ? CameraState.Aim
-                : CameraState.Default;
-
-            SetCameraState(desiredState);
+            var desired = (canAim && aimHeld) ? CameraState.Aim : CameraState.Default;
+            SetCameraState(desired);
         }
 
         private void SetCameraState(CameraState newState)
         {
-            if (CameraState == newState)
-                return;
-
+            if (CameraState == newState) return;
             CameraState = newState;
             CameraStateChanged?.Invoke(CameraState);
         }

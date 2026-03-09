@@ -103,8 +103,8 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _CompHistoryValid: 1
-    - _CompKeyframe: 0
+    - _CompHistoryValid: 0
+    - _CompKeyframe: 1
     - _CompMotion: 0
     - _Cull: 2
     - _Cutoff: 0.5

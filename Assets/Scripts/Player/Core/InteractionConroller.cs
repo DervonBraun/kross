@@ -7,8 +7,8 @@ namespace Player
     public class InteractionController : MonoBehaviour
     {
         public event Action<CameraState> CameraStateChanged;
-        public event Action<bool> DefaultInteractableChanged; // UI для прицела
-        public event Action<bool> AimInteractableChanged;     // пригодится для Lens/индикаторов
+        public event Action<bool> DefaultInteractableChanged;
+        public event Action<bool> AimInteractableChanged;
 
         public bool HasDefaultInteractable { get; private set; }
         public bool HasAimInteractable { get; private set; }
@@ -18,6 +18,7 @@ namespace Player
         private PlayerContext _context;
 
         private Component _currentTarget;
+        private IInteractableAim _currentAimTarget;
 
         private void Awake()
         {
@@ -31,7 +32,6 @@ namespace Player
             if (_context != null)
                 _context.CameraStateChanged += OnCameraStateChanged;
 
-            // стартовое состояние
             OnCameraStateChanged(_context.CameraState);
             RecomputeInteractables();
         }
@@ -49,14 +49,14 @@ namespace Player
         {
             if (_currentTarget == null) return;
             if (_inputFilter == null) return;
-            if (!_inputFilter.InteractPressed()) return; // важно: одно нажатие = один интеракт
+            if (!_inputFilter.InteractPressed()) return;
 
+            // По нажатию — выполняем действие в зависимости от режима камеры
             if (_context.CameraState == CameraState.Aim)
                 TryAimInteract(_currentTarget);
             else
                 TryDefaultInteract(_currentTarget);
 
-            // после интеракции состояние "можно/нельзя" могло поменяться (например, дверь открылась/закрылась)
             RecomputeInteractables();
         }
 
@@ -64,21 +64,54 @@ namespace Player
         {
             CameraStateChanged?.Invoke(state);
 
-            // В Aim прицел будет скрыт, но мы всё равно можем поддерживать флаги актуальными.
+            if (state == CameraState.Aim)
+            {
+                // Вошли в Aim — если уже смотрим на объект, показываем HUD
+                if (_currentAimTarget is IInteractableAimHover hover)
+                    hover.OnAimEnter(_context);
+            }
+            else
+            {
+                // Вышли из Aim — скрываем HUD
+                NotifyAimExit(_currentAimTarget);
+            }
+
             RecomputeInteractables();
         }
 
         private void OnTargetChanged(Component target)
         {
+            var incoming = target?.GetComponentInParent<IInteractableAim>();
+
+            if (!ReferenceEquals(incoming, _currentAimTarget))
+            {
+                // Старый объект — скрываем HUD (только если были в Aim)
+                if (_context.CameraState == CameraState.Aim)
+                    NotifyAimExit(_currentAimTarget);
+
+                _currentAimTarget = incoming;
+
+                // Новый объект — показываем HUD только если уже в Aim
+                if (_context.CameraState == CameraState.Aim && incoming is IInteractableAimHover h)
+                    h.OnAimEnter(_context);
+            }
+
             _currentTarget = target;
             RecomputeInteractables();
         }
 
+        // ── Helpers ───────────────────────────────────────────────────────────
+
+        private static void NotifyAimExit(IInteractableAim aim)
+        {
+            if (aim is IInteractableAimExit exit)
+                exit.OnAimExit();
+        }
+
         private void RecomputeInteractables()
         {
-            // target может быть null
             bool canDefault = false;
-            bool canAim = false;
+            bool canAim     = false;
 
             if (_currentTarget != null)
             {
